@@ -5,9 +5,7 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatroomAPI", "ChatroomAPI\ChatroomAPI.csproj", "{EA67818E-8C30-48C9-8A98-1BD6E1D5D9CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JavascriptClient1", "JavascriptClient1\JavascriptClient1.csproj", "{3293E165-4658-43A7-8DD1-DA1EC2DDCEA1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavascriptClient2", "JavascriptClient2\JavascriptClient2.csproj", "{AD4C025E-31AF-4850-85A5-374F1C830408}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JavascriptClient", "JavascriptClient1\JavascriptClient.csproj", "{3293E165-4658-43A7-8DD1-DA1EC2DDCEA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{3293E165-4658-43A7-8DD1-DA1EC2DDCEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3293E165-4658-43A7-8DD1-DA1EC2DDCEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3293E165-4658-43A7-8DD1-DA1EC2DDCEA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD4C025E-31AF-4850-85A5-374F1C830408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD4C025E-31AF-4850-85A5-374F1C830408}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD4C025E-31AF-4850-85A5-374F1C830408}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD4C025E-31AF-4850-85A5-374F1C830408}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
