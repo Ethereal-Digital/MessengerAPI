@@ -1,0 +1,47 @@
+[
+  {
+    "UID": "ID_00000",
+    "Name": "Jaeden",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_11111",
+    "Name": "Heng",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_22222",
+    "Name": "XiangRui",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_33333",
+    "Name": "MunHaw",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_44444",
+    "Name": "Desmond",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_55555",
+    "Name": "Khew",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_66666",
+    "Name": "Brian",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_77777",
+    "Name": "Oscar",
+    "Password": "1234"
+  },
+  {
+    "UID": "ID_88888",
+    "Name": "Jimmy",
+    "Password": "1234"
+  }
+]

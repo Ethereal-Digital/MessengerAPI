@@ -1,0 +1,18 @@
+[
+  {
+    "messageDate": "0001-01-01T00:00:00",
+    "sender": "Jaeden",
+    "senderId": "ID_00000",
+    "receiver": "Heng",
+    "receiverId": "ID_11111",
+    "messages": "1st message"
+  },
+  {
+    "messageDate": "0001-01-01T00:00:00",
+    "sender": "Jaeden",
+    "senderId": "ID_00000",
+    "receiver": "Heng",
+    "receiverId": "ID_11111",
+    "messages": "2nd messages"
+  }
+]
