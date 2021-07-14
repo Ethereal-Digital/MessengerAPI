@@ -7,18 +7,34 @@ document.addEventListener("DOMContentLoaded", () => {
         .build();
 
     connection.on("ReceiveMessage", (message) => {
-        const li = document.createElement("li");
-        console.log("received message");
-        console.log(message);
-        if (message.senderUID == userID)
-        {
-            li.textContent = `me to All: ${message.messageBody}`;
+        console.log("Received message");
+       
+        if (message.messageTypeId == 1) {
+            const li = document.createElement("li");
+            console.log(message);
+            if (message.senderUID == userID) {
+                li.textContent = `me to All: ${message.messageBody}`;
+            }
+            else {
+                li.textContent = `${message.sender}: ${message.messageBody}`;
+            }
+            document.getElementById("messageList").appendChild(li);
         }
-        else
+        else if (message.messageTypeId == 2)
         {
-            li.textContent = `${message.sender}: ${message.messageBody}`;
+            const li = document.createElement("li");
+            const element = document.createElement('a');
+            const messageList = document.getElementById("messageList");
+    
+            element.setAttribute('href', ApiBaseURL + "/chat/downloadFile?fileName=" + message.messageBody);
+            element.setAttribute('download', message.messageBody);
+
+            element.textContent = message.messageBody;
+            li.textContent = `me to All: `;
+            li.append(element);
+            messageList.appendChild(li);
         }
-        document.getElementById("messageList").appendChild(li);
+       
     });
  
     connection.on("ReceivePrivateMessage", (message) => {
@@ -51,6 +67,73 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("groupMessageList").appendChild(li);
     });
 
+    document.getElementById("sendFile").addEventListener("click", async () => {
+        console.log("Sending file");
+        if (window.FormData !== undefined) {
+
+            var fileData = new FormData();
+            const user = userName;
+            const id = userID;
+            const receiverId = document.getElementById("receiver").value;
+            const progress = document.getElementById("progress");
+            const today = new Date(Date.now());
+            const tmpDate = today.toISOString();
+            const randomNumber = Math.floor(Math.random() * 20000);
+
+            var files = document.getElementById("myFile").files;
+            var fileVar = files[0];
+
+            console.log("Compiling message");
+
+            MessageClass = JSON.stringify(
+                {
+                    "UID": "MUID" + randomNumber,
+                    "Sender": user,
+                    "SenderUID": id,
+                    "Receiver": null,
+                    "ReceiverUID": receiverId,
+                    "MessageTypeId": 2,
+                    "MessageBody": fileVar.name,
+                    "CreatedDate": tmpDate
+                });
+
+            fileData.append('File', fileVar);
+            fileData.append('MessageInfo', MessageClass);
+
+            console.log("Uploading to server");
+
+            $.ajax({
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            console.log("upload: " + percentComplete);
+                            progress.setAttribute("style", 'width:' + Math.floor(percentComplete) + '%');
+                        }
+                    }, false);
+                    return xhr;
+                },
+                url: ApiBaseURL + '/chat/SendFile',
+                type: "POST",
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                data: fileData,
+                success: function (result) {
+                    console.log("upload success");
+                    progress.setAttribute("style", 'width:' + 0 + '%');
+                },
+                error: function (err) {
+                    console.log("upload fail");
+ 
+                }
+            });
+        } else {
+            console.log("FormData is not supported.");
+        }  
+
+    });
+
     document.getElementById("send").addEventListener("click", async () => {
      
         const user = userName;
@@ -73,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "SenderUID": id,
                     "Receiver": null,
                     "ReceiverUID": receiverId,
-                    "MessageTypeId": null,
+                    "MessageTypeId": 1,
                     "MessageBody": message,
                     "CreatedDate": tmpDate
                 });
@@ -269,7 +352,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     "UserUID": userID,
                     "UserName": userName
                 });
-
 
             UpdateUserConnection().then(response => { });
             

@@ -19,6 +19,7 @@ using ChatroomAPI.Services;
 using ChatroomAPI.Model.Dto;
 using ChatroomAPI.Services.Interface;
 using ChatroomAPI.Model.Frontend;
+using Newtonsoft.Json;
 
 namespace ChatroomAPI.Controllers
 {
@@ -33,44 +34,74 @@ namespace ChatroomAPI.Controllers
         private IChatServices _chatService { get; set; }
         private IHttpContextAccessor _hcontext;
 
-        public ChatController(ILogger<ChatController> logger, [NotNull] IHubContext<ChatHub> chatHub, IChatServices ChatService, IHttpContextAccessor haccess)
+        public ChatController(ILogger<ChatController> logger, [NotNull] IHubContext<ChatHub> chatHub, IChatServices chatService, IHttpContextAccessor haccess)
         {
             _logger = logger;
             _hubContext = chatHub;
-            _chatService = ChatService;
+            _chatService = chatService;
             _hcontext = haccess;
-        }
 
-        [HttpGet]
-        public IActionResult GetRoomList()
-        {
-            var RoomList = _chatService.GetRoomList();
-
-            return Ok(RoomList);
-        }
-
-        [HttpPost]
-        public IActionResult UpdateUsersHubConnection(UserConnectionInfo UserConnectionInfo)
-        {
-            _chatService.UpdateUserHubConnection(UserConnectionInfo);
-            _chatService.RejoinRoom(UserConnectionInfo);
-
-            return Ok("Updated connection & rejoined room");
+            var ddd = Directory.GetCurrentDirectory();
+            var dddd = Path.GetFullPath(Path.Combine(ddd, @"..\..\"));
         }
 
         //[HttpPost]
-        //[AllowAnonymous]
-        //[Consumes("multipart/form-data")]
-        //public async Task<HttpResponseMessage> Upload()
+        //public async Task<string> SendFile()
         //{
+        //    var provider = new MultipartFormDataStreamProvider(@"C:\Users\ACER\Desktop\Jaeden\Personal\Tools\ChatApplication\FileStorage\TestUpload");
+        //    await Request.Content.ReadAsMultipartAsync(provider);
 
-        //        var streamProvider = new MultipartMemoryStreamProvider();
-        //        await Request.Content.ReadAsMultipartAsync(streamProvider);
-        //        var fileStream = await streamProvider.Contents[0].ReadAsStreamAsync();
+        //    var myParameter = provider.FormData.GetValues("myParameter").FirstOrDefault();
+        //    var count = provider.FileData.Count;
 
-
-        //    return Ok("Done");
+        //    return count + " / " + myParameter;
         //}
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SendFile([FromForm] FileMessage fileMessage)
+        {
+            try
+            {
+                Message message = JsonConvert.DeserializeObject<Message>(fileMessage.MessageInfo);
+                await _chatService.SendFileMessageToAll(fileMessage.File, message);
+
+                return Ok(new { Size = FileServices.SizeConverter(fileMessage.File.Length) } );
+                //return Ok(new { files.Count, Size = FileServices.SizeConverter(files.Sum(f => f.Length)) });
+            }
+            catch (Exception exception)
+            {
+                return BadRequest($"Error: {exception.Message}");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadFile(string fileName)
+        {
+            string filePath = @"C:\Users\ACER\Desktop\Jaeden\Personal\Tools\ChatApplication\FileStorage\TestUpload\" + fileName;
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            //var types = GetMimeTypes();
+            //var ext = Path.GetExtension(filePath).ToLowerInvariant();
+
+            return File(memory, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".mp3", "audio/mpeg"},
+                {".wav","audio/wav" }
+            };
+        }
 
         //[HttpPost]
         //[AllowAnonymous]
@@ -91,6 +122,23 @@ namespace ChatroomAPI.Controllers
 
         //    return Ok("Done");
         //}
+
+        [HttpGet]
+        public IActionResult GetRoomList()
+        {
+            var RoomList = _chatService.GetRoomList();
+
+            return Ok(RoomList);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateUsersHubConnection(UserConnectionInfo UserConnectionInfo)
+        {
+            _chatService.UpdateUserHubConnection(UserConnectionInfo);
+            _chatService.RejoinRoom(UserConnectionInfo);
+
+            return Ok("Updated user connection.");
+        }
 
         [HttpPost]
         public async Task<IActionResult> GetMessageHistory(UserMessageHistory userMessageHistory)

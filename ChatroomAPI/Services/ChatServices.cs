@@ -8,6 +8,7 @@ using ChatroomAPI.Model.Frontend;
 using ChatroomAPI.Model.Hubs;
 using ChatroomAPI.Repositories.Interface;
 using ChatroomAPI.Services.Interface;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
@@ -26,11 +27,14 @@ namespace ChatroomAPI.Services
         private ChatMiddleware _chatManager { get; set; } = new ChatMiddleware();
         private IChatRepository _chatRepository { get; set; }
         private readonly IHubContext<ChatHub> _hubContext;
+        private FileServices _fileService { get; set; }
 
-        public ChatServices([NotNull] IHubContext<ChatHub> chatHub, IChatRepository chatRepository)
+        public ChatServices([NotNull] IHubContext<ChatHub> chatHub, FileServices fileServices, IChatRepository chatRepository)
         {
             _hubContext = chatHub;
+            _fileService = fileServices;
             _chatRepository = chatRepository;
+       
         }
 
         public void UpdateUserHubConnection(UserConnectionInfo newUserInfo)
@@ -52,6 +56,37 @@ namespace ChatroomAPI.Services
         public async Task <List<MessageDto>> GetGroupMessageHistory(UserGroupMessageHistory userMessageHistory)
         {
             return await _chatRepository.GetGroupMessageHistory(userMessageHistory.SenderUID, userMessageHistory.RoomName);
+        }
+
+        public async Task SendFileMessageToAll(IFormFile file, Message message)
+        {
+            await _fileService.SaveFile(file);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+            //await UpdateMessageHistory(message);
+        }
+
+        public async Task SendFileMessage(IFormFile file, Message message)
+        {
+            await _fileService.SaveFile(file);
+
+            var receiverName = _chatManager.GetUserInformation(message.ReceiverUID);
+            var connectionId = _chatManager.GetUserHubConnectionId(message.ReceiverUID);
+            var selfConnectionId = _chatManager.GetUserHubConnectionId(message.SenderUID);
+
+            if (receiverName != null)
+            {
+                message.Receiver = receiverName.UserName;
+
+                await _hubContext.Clients.Client(connectionId).SendAsync("ReceivePrivateMessage", message);
+                await _hubContext.Clients.Client(selfConnectionId).SendAsync("ReceivePrivateMessage", message);
+                await UpdateMessageHistory(message);
+            }
+            else
+            {
+                message.MessageBody = $"NOTE: User is not online";
+                await _hubContext.Clients.Client(selfConnectionId).SendAsync("ReceivePrivateMessage", message);
+            }
+
         }
 
         public async Task SendMessage(Message message)
@@ -91,7 +126,9 @@ namespace ChatroomAPI.Services
         public async Task RejoinRoom(UserConnectionInfo userConnectionInfo)
         {
             var room = _chatRepository.GetRoom(userConnectionInfo.UserUID);
-            await _hubContext.Groups.AddToGroupAsync(userConnectionInfo.ConnectionId, room.Name);
+
+            if(room != null)
+                await _hubContext.Groups.AddToGroupAsync(userConnectionInfo.ConnectionId, room.Name);
         }
 
         public async Task JoinRoom(UserRoomInfo userRoomInfo)

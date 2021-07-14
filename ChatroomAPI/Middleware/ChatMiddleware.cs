@@ -11,18 +11,21 @@ namespace ChatroomAPI.Middleware
     public sealed class ChatMiddleware : IChatMiddleware
     {
         private static readonly object _lock = new object ();
-        private static ConcurrentDictionary<string, UserConnectionInfo> _usersHubConnection { get; set; }
-        private static ConcurrentDictionary<string, UserConnectionInfo> UsersHubConnection
+        private static ConcurrentDictionary<string, UserConnectionInfo> _onlineUsers { get; set; }
+        public static ConcurrentDictionary<string, UserConnectionInfo> OnlineUsers
         {
             get
             {
-                lock (_lock)
+                if(_onlineUsers == null)
+                {
+                    lock (_lock)
                     {
-                        if (_usersHubConnection == null)
-                            _usersHubConnection = new ConcurrentDictionary<string, UserConnectionInfo>();
+                        if (_onlineUsers == null)
+                            _onlineUsers = new ConcurrentDictionary<string, UserConnectionInfo>();
                     }
+                }
 
-                return _usersHubConnection;
+                return _onlineUsers;
             }
 
         }
@@ -33,10 +36,13 @@ namespace ChatroomAPI.Middleware
         {
             get
             {
-                lock (_lock1)
+                if(_usersGroup == null)
                 {
-                    if (_usersGroup == null)
-                        _usersGroup = new ConcurrentDictionary<string, string>();
+                    lock (_lock1)
+                    {
+                        if (_usersGroup == null)
+                            _usersGroup = new ConcurrentDictionary<string, string>();
+                    }
                 }
 
                 return _usersGroup;
@@ -50,13 +56,13 @@ namespace ChatroomAPI.Middleware
 
         public string GetUserHubConnectionId(string userUID)
         {
-            string connectionID = UsersHubConnection.Where(x => x.Value.UserUID == userUID).Select(x => x.Value.ConnectionId).FirstOrDefault();
+            string connectionID = _onlineUsers.Where(x => x.Value.UserUID == userUID).Select(x => x.Value.ConnectionId).FirstOrDefault();
             return connectionID;
         }
 
         public UserConnectionInfo GetUserInformation(string userUID)
         {
-            var userInformation = UsersHubConnection.Where(x => x.Value.UserUID == userUID).Select(x => x.Value).FirstOrDefault();
+            var userInformation = _onlineUsers.Where(x => x.Value.UserUID == userUID).Select(x => x.Value).FirstOrDefault();
             return userInformation;
         }
 
@@ -64,15 +70,15 @@ namespace ChatroomAPI.Middleware
         {
             UserConnectionInfo oldUserInfo = new UserConnectionInfo();
 
-            if (!UsersHubConnection.TryGetValue(newUserInfo.UserUID, out oldUserInfo))
+            if (!OnlineUsers.TryGetValue(newUserInfo.UserUID, out oldUserInfo))
             {
-                UsersHubConnection.TryAdd(newUserInfo.UserUID, newUserInfo);
+                _onlineUsers.TryAdd(newUserInfo.UserUID, newUserInfo);
             }
             else
             {
                 lock (oldUserInfo)
                 {
-                    UsersHubConnection.TryUpdate(newUserInfo.UserUID, newUserInfo, oldUserInfo);
+                    _onlineUsers.TryUpdate(newUserInfo.UserUID, newUserInfo, oldUserInfo);
                 }
             }
         }

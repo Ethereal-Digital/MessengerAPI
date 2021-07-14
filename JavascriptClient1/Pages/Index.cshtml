@@ -9,6 +9,7 @@
     @*User.FindFirst("UserID").Value;*@
 }
 
+
 <div class="form-group row">
     <label for="user" class="col-12 col-form-label">User: @username  @userId</label>
 </div>
@@ -45,23 +46,31 @@
 
         <button id="send" type="button" class="btn btn-primary">Send Message</button>
 
-        <!--<div>
+        <div>
             <br>
             <div class="form-group row">
                 <div class="col">
-                    <input type="file" id="myFile" name="filename">
-                    <button id="sendFile" type="button" class="btn btn-primary">Send File</button>-->
-                    @*<input type="submit">*@
-                    @*<button style="display:block;width:120px; height:30px;" onclick="document.getElementById('getFile').click()">Your text here</button>
+                    <input type="file" id="myFile" name="File">
+                    <button id="sendFile" type="button" class="btn btn-primary">Send File</button>
+                    @*<input type="submit">
+                    <button style="display:block;width:120px; height:30px;" onclick="document.getElementById('getFile').click()">Your text here</button>
                     <input type='file' id="getFile" style="display:none">*@
-                <!--</div>
+                </div>
+               
             </div>
-        </div>-->
-       
+            <div class="row progress">
+                <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
 
         <hr>
 
-        <ul id="messageList"></ul>
+        <ul id="messageList">
+            @*<li>
+                <a href=@($"https://5cfd10954f58.ngrok.io" + "/chat/downloadFile" ) download=@("testing.txt") target="_top">Download</a>
+            </li>*@
+        </ul>
 
     </div>
 

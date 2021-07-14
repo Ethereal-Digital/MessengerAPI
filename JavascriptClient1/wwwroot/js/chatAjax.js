@@ -1,8 +1,8 @@
 ﻿
 //let ApiBaseURL = "https://localhost:44364";
 //let chatHubURL = "https://localhost:44364/ChatHub";
-let ApiBaseURL = "https://953cad0ac598.ngrok.io";
-let chatHubURL = "https://953cad0ac598.ngrok.io/ChatHub";
+let ApiBaseURL = "https://5cfd10954f58.ngrok.io";
+let chatHubURL = "https://5cfd10954f58.ngrok.io/ChatHub";
 let MessageClass;
 let GroupMessageClass;
 let UserConnectionInfo;

@@ -15,7 +15,7 @@ namespace JavascriptClient1.Pages
     public class LoginModel : PageModel
     {
         //private string ApiBaseURL = "https://localhost:44364";
-        private string ApiBaseURL = "https://953cad0ac598.ngrok.io";
+        private string ApiBaseURL = "https://5cfd10954f58.ngrok.io";
 
         private static string _notification { get; set; }
         public string notification

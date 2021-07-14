@@ -54,6 +54,7 @@ namespace ChatroomAPI
 
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IChatServices, ChatServices>();
+            services.AddScoped<FileServices>();
             //services.AddSingleton<IChatMiddleware, ChatMiddleware>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

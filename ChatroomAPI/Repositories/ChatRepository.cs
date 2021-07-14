@@ -29,13 +29,13 @@ namespace ChatroomAPI.Repositories
             List<MessageDto> messages = new List<MessageDto>();
             if (receiverUID != "All")
             {
-                messages = await _chatContext.messages.Where(x => x.SenderUID == senderUID && x.ReceiverUID == receiverUID
+                messages = await _chatContext.messages.AsNoTracking().Where(x => x.SenderUID == senderUID && x.ReceiverUID == receiverUID
                                                                 || x.SenderUID == receiverUID && x.ReceiverUID == senderUID)
                                                              .OrderBy(x => x.CreatedDate).ToListAsync();
             }
             else
             {
-                messages = await _chatContext.messages.Where(x => x.ReceiverUID == receiverUID).OrderBy(x => x.CreatedDate).ToListAsync();
+                messages = await _chatContext.messages.AsNoTracking().Where(x => x.ReceiverUID == receiverUID).OrderBy(x => x.CreatedDate).ToListAsync();
             }
             return messages;
         }
@@ -43,7 +43,7 @@ namespace ChatroomAPI.Repositories
         public async Task<List<MessageDto>> GetGroupMessageHistory(string senderUID, string roomName)
         {
             List<MessageDto> messages = new List<MessageDto>();
-            messages = await _chatContext.messages.Where(x => x.RoomId == GetRoomId(roomName)).ToListAsync();
+            messages = await _chatContext.messages.AsNoTracking().Where(x => x.RoomId == GetRoomId(roomName)).ToListAsync();
             return messages;
         }
 
@@ -75,19 +75,19 @@ namespace ChatroomAPI.Repositories
 
         public int GetRoomId(string roomName)
         {
-            int index = _chatContext.rooms.Where(x => x.Name == roomName).Select(x => x.Id).FirstOrDefault();
+            int index = _chatContext.rooms.AsNoTracking().Where(x => x.Name == roomName).Select(x => x.Id).FirstOrDefault();
             return index;
         }
 
         public string GetRoomName(int RoomId)
         {
-            string name = _chatContext.rooms.Where(x => x.Id == RoomId).Select(x => x.Description).FirstOrDefault();
+            string name = _chatContext.rooms.AsNoTracking().Where(x => x.Id == RoomId).Select(x => x.Description).FirstOrDefault();
             return name;
         }
 
         public List<RoomDto> GetRoomList()
         {
-            List<RoomDto> Rooms = _chatContext.rooms.ToList();
+            List<RoomDto> Rooms = _chatContext.rooms.AsNoTracking().ToList();
             return Rooms;
         }
     }
