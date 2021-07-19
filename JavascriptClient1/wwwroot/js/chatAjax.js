@@ -1,10 +1,9 @@
 ﻿
 //let ApiBaseURL = "https://localhost:44364";
 //let chatHubURL = "https://localhost:44364/ChatHub";
-let ApiBaseURL = "https://5cfd10954f58.ngrok.io";
-let chatHubURL = "https://5cfd10954f58.ngrok.io/ChatHub";
+let ApiBaseURL = "https://cece116c57cc.ngrok.io";
+let chatHubURL = "https://cece116c57cc.ngrok.io/ChatHub";
 let MessageClass;
-let GroupMessageClass;
 let UserConnectionInfo;
 let JoinGroupJson;
 let ExitGroupJson;
@@ -76,7 +75,7 @@ function SendMessageToGroup() {
         $.ajax({
             url: ApiBaseURL + '/chat/SendMessageToRoom',
             method: 'POST',
-            data: GroupMessageClass,
+            data: MessageClass,
             contentType: "application/json",
             success: function (data) {
 
@@ -95,13 +94,17 @@ function GetMessageHistory() {
 
         $.ajax({
             url: ApiBaseURL + '/chat/GetMessageHistory',
+            startTime: performance.now(),
             method: 'POST',
             data: UserMessageHistory,
             contentType: "application/json",
             success: function (data) {
-
+                var time = performance.now() - this.startTime;
+                var result = 'AJAX: ' + time + ' milliseconds.';
+                console.log(result);
                 var jsonData = JSON.stringify(data);
                 resolve(jsonData);
+
             },
             error: function (data) {
                 reject(data);
@@ -115,11 +118,14 @@ function GetGroupMessageHistory() {
 
         $.ajax({
             url: ApiBaseURL + '/chat/GetGroupMessageHistory',
+            startTime: performance.now(),
             method: 'POST',
             data: UserGroupMessageHistory,
             contentType: "application/json",
             success: function (data) {
-
+                var time = performance.now() - this.startTime;
+                var result = 'AJAX: ' + time + ' milliseconds.';
+                console.log(result);
                 var jsonData = JSON.stringify(data);
                 resolve(jsonData);
             },
