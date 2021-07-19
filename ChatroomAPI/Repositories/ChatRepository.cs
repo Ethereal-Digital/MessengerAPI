@@ -40,12 +40,13 @@ namespace ChatroomAPI.Repositories
                                                              .OrderBy(x => x.CreatedDate)
                                                              .Skip(messageHistory.ItemSize * messageHistory.Counter)
                                                              .Take(messageHistory.ItemSize)
-                                                             .AsNoTracking()
-                                                             .ToListAsync();
+                                                             .AsNoTracking().ToListAsync();
             }
             else
             {
-                messages =  await _chatContext.messages.Where(x => x.ReceiverUID == messageHistory.ReceiverUID).OrderBy(x => x.CreatedDate).AsNoTracking().ToListAsync();
+                messages =  await _chatContext.messages.Where(x => x.ReceiverUID == messageHistory.ReceiverUID)
+                                                        .OrderBy(x => x.CreatedDate)
+                                                        .AsNoTracking().ToListAsync();
             }
             return messages;
         }
@@ -57,8 +58,7 @@ namespace ChatroomAPI.Repositories
                                                         .OrderBy(x => x.CreatedDate)
                                                         .Skip(userMessageHistory.ItemSize * userMessageHistory.Counter)
                                                         .Take(userMessageHistory.ItemSize)
-                                                        .AsNoTracking()
-                                                        .ToListAsync();
+                                                        .AsNoTracking().ToListAsync();
             return messages;
         }
 
@@ -74,8 +74,7 @@ namespace ChatroomAPI.Repositories
                         join participant in _chatContext.participants on rooms.Id equals participant.RoomId
                         where participant.UserUID == participantUID
                         select rooms)
-                        .AsNoTracking()
-                        .ToList();
+                        .AsNoTracking().ToList();
             return room;
         }
 

@@ -28,18 +28,20 @@ namespace ChatroomAPI.Services
         public async Task SaveFile(IFormFile file, Message message)
         {
             var rootPath = Path.GetFullPath(Path.Combine(contentRootPath, @"..\..\")) + @"FileStorage\Upload";
+            var extension = Path.GetExtension(file.FileName);
             var target = "";
             var filePath = "";
+           
 
             if (message.RoomName == null)
             {
                 target = rootPath + @"\Private\" + message.SenderUID + ";" + message.ReceiverUID + @"\";
-                filePath = Path.Combine(target, message.UID);
+                filePath = Path.Combine(target, message.UID + extension);
             }
             else
             {
                 target = rootPath + @"\Room\" + _chatRepository.GetRoomId(message.RoomName) + @"\";
-                filePath = Path.Combine(target, message.UID);
+                filePath = Path.Combine(target, message.UID + extension);
             }
 
             Directory.CreateDirectory(target);
@@ -54,21 +56,22 @@ namespace ChatroomAPI.Services
 
         public async Task<(MemoryStream ms, string fileName)> DownloadFile(string attachment_id)
         {
-            var rootPath = Path.GetFullPath(Path.Combine(contentRootPath, @"..\..\")) + @"FileStorage\Upload";
             var message = await _chatRepository.GetMessage(attachment_id);
-
             string filePath = "";
             string senderUID = message.SenderUID;
             string receiverUID = message.ReceiverUID;
             string fileName = message.MessageBody;
 
+            var rootPath = Path.GetFullPath(Path.Combine(contentRootPath, @"..\..\")) + @"FileStorage\Upload";
+            var extension = Path.GetExtension(fileName);
+
             if (message.RoomId.HasValue == false)
             {
-                filePath = rootPath +  @"\Private\" + $@"{senderUID};{receiverUID}\" + attachment_id;
+                filePath = rootPath +  @"\Private\" + $@"{senderUID};{receiverUID}\" + attachment_id + extension;
             }
             else
             {
-                filePath = rootPath + @"\Room\" + $@"{message.RoomId.Value}\" + attachment_id;
+                filePath = rootPath + @"\Room\" + $@"{message.RoomId.Value}\" + attachment_id + extension;
             }
 
             if (!File.Exists(filePath))
