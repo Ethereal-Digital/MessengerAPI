@@ -15,7 +15,7 @@ namespace JavascriptClient1.Pages
     public class LoginModel : PageModel
     {
         //private string ApiBaseURL = "https://localhost:44364";
-        private string ApiBaseURL = "https://5cfd10954f58.ngrok.io";
+        private string ApiBaseURL = "https://cece116c57cc.ngrok.io";
 
         private static string _notification { get; set; }
         public string notification
@@ -69,6 +69,8 @@ namespace JavascriptClient1.Pages
 
                     var claimsIdentity = new ClaimsIdentity(claims, "ChatCookie");
                     await HttpContext.SignInAsync("ChatCookie", new ClaimsPrincipal(claimsIdentity));
+
+                    _notification = null;
 
                     return Redirect("/Index");
                 }

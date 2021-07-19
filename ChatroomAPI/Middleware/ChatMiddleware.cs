@@ -1,5 +1,4 @@
-﻿using ChatroomAPI.Middleware.Interface;
-using ChatroomAPI.Model;
+﻿using ChatroomAPI.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChatroomAPI.Middleware
 {
-    public sealed class ChatMiddleware : IChatMiddleware
+    public sealed class ChatMiddleware
     {
         private static readonly object _lock = new object ();
         private static ConcurrentDictionary<string, UserConnectionInfo> _onlineUsers { get; set; }
@@ -27,30 +26,6 @@ namespace ChatroomAPI.Middleware
 
                 return _onlineUsers;
             }
-
-        }
-
-        private static readonly object _lock1 = new object();
-        private static ConcurrentDictionary<string, string> _usersGroup { get; set; }
-        private static ConcurrentDictionary<string, string> UsersGroup
-        {
-            get
-            {
-                if(_usersGroup == null)
-                {
-                    lock (_lock1)
-                    {
-                        if (_usersGroup == null)
-                            _usersGroup = new ConcurrentDictionary<string, string>();
-                    }
-                }
-
-                return _usersGroup;
-            }
-        }
-
-        private void UpdateUserGroup()
-        {
 
         }
 

@@ -1,4 +1,5 @@
-﻿using ChatroomAPI.Model;
+﻿using ChatroomAPI.Database;
+using ChatroomAPI.Model;
 using ChatroomAPI.Model.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -14,12 +15,17 @@ namespace ChatroomAPI.Controllers
     [Route("[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        string Filejson = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + @"\MockDB\Users.json");
+        private ChatContext _chatContext { get; set; }
+
+        public UserController(ChatContext chatContext)
+        {
+            _chatContext = chatContext;
+        }
 
         [HttpPost]
         public IActionResult Login(UserDto user)
         {
-            List<UserDto> messages = JsonConvert.DeserializeObject<List<UserDto>>(Filejson);
+            List<UserDto> messages = _chatContext.users.ToList();
 
             if (messages.Where(x => x.Name.ToLower() == user.Name.ToLower()).FirstOrDefault() != null)
             {

@@ -1,6 +1,5 @@
 using ChatroomAPI.Database;
 using ChatroomAPI.Middleware;
-using ChatroomAPI.Middleware.Interface;
 using ChatroomAPI.Model.Hubs;
 using ChatroomAPI.Repositories;
 using ChatroomAPI.Repositories.Interface;
@@ -37,25 +36,15 @@ namespace ChatroomAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            //{
-            //    builder.AllowAnyOrigin()
-            //           .AllowAnyMethod()
-            //           .AllowAnyHeader()
-            //           .DisallowCredentials();
-            //}));
-            //    services.AddDbContext<ChatContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddDbContextPool<ChatContext>(options =>
             {
+                //options.UseLazyLoadingProxies();
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString"));
             });
 
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IChatServices, ChatServices>();
-            services.AddScoped<FileServices>();
-            //services.AddSingleton<IChatMiddleware, ChatMiddleware>();
+            services.AddScoped<IFileServices, FileServices>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddDistributedMemoryCache();
@@ -74,8 +63,7 @@ namespace ChatroomAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ChatroomAPI", Version = "v1" });
             });
 
-
-            //services.AddMvc(option => { option.EnableEndpointRouting = false; });
+            //services.AddMvc(option => { option.MaxIAsyncEnumerableBufferLimit = 30000; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,8 +80,6 @@ namespace ChatroomAPI
 
             app.UseRouting();
 
-            //app.UseCors("MyPolicy");
-
             app.UseCors(builder => builder
                          .AllowAnyMethod()
                          .AllowAnyHeader()
@@ -102,32 +88,14 @@ namespace ChatroomAPI
 
             app.UseSession();
 
-            //app.UseAuthorization();
-
-            app.Use(async (context, next) =>
-            {
-                var hubContext = context.User;
-
-                //if(hubContext != null)
-                //    await hubContext.Clients.All.SendAsync("ReceiveMessage", "122", "444");
-
-                if (next != null)
-                {
-                    await next.Invoke();
-                }
-            });
-
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}");
 
                 endpoints.MapHub<ChatHub>("/ChatHub");
             });
-
-            //app.UseMvc();
         }
     }
 }

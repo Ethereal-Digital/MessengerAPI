@@ -45,18 +45,20 @@
         </div>
 
         <button id="send" type="button" class="btn btn-primary">Send Message</button>
+        <button id="LoadMoreMessage" type="button" class="btn btn-primary">Load More Message</button>
+        <button id="sendFile" type="button" class="btn btn-primary">Send File</button>
 
         <div>
             <br>
             <div class="form-group row">
                 <div class="col">
                     <input type="file" id="myFile" name="File">
-                    <button id="sendFile" type="button" class="btn btn-primary">Send File</button>
+
                     @*<input type="submit">
                     <button style="display:block;width:120px; height:30px;" onclick="document.getElementById('getFile').click()">Your text here</button>
                     <input type='file' id="getFile" style="display:none">*@
                 </div>
-               
+
             </div>
             <div class="row progress">
                 <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
@@ -101,6 +103,26 @@
         </div>
 
         <button id="groupSend" type="button" class="btn btn-primary">Send Group Message</button>
+        <button id="LoadMoreGroupMessage" type="button" class="btn btn-primary">Load More Message</button>
+        <button id="sendFileToGroup" type="button" class="btn btn-primary">Send File</button>
+
+        <div>
+            <br>
+            <div class="form-group row">
+                <div class="col">
+                    <input type="file" id="groupFile" name="File">
+
+                    @*<input type="submit">
+                    <button style="display:block;width:120px; height:30px;" onclick="document.getElementById('getFile').click()">Your text here</button>
+                    <input type='file' id="getFile" style="display:none">*@
+                </div>
+
+            </div>
+            <div class="row progress">
+                <div id="progressGroup" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
 
         <hr>
 
