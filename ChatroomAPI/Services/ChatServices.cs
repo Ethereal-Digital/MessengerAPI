@@ -55,7 +55,6 @@ namespace ChatroomAPI.Services
             return await _chatRepository.GetGroupMessageHistory(userMessageHistory);
         }
        
-
         #region Send Message / File
         public async Task SendMessage(Message message)
         {
@@ -97,20 +96,17 @@ namespace ChatroomAPI.Services
                 await _hubContext.Clients.Client(selfConnectionId).SendAsync("PrivateMessage", message);
             }
         }
-
         public async Task SendMessageToAll(Message message)
         {
             await _hubContext.Clients.All.SendAsync("PublicMessage", message);
             await UpdateMessageHistory(message);
         }
-
         public async Task SendFileMessageToAll(IFormFile file, Message message)
         {
             await _fileService.SaveFile(file, message);
             await _hubContext.Clients.All.SendAsync("PublicMessage", message);
             await UpdateMessageHistory(message);
         }
-
         public async Task SendMessageToRoom(Message RoomMessage)
         {
             if (_chatRepository.IsUserInRoom(RoomMessage.SenderUID, RoomMessage.RoomName) == false)
@@ -119,7 +115,6 @@ namespace ChatroomAPI.Services
             await _hubContext.Clients.Group(RoomMessage.RoomName).SendAsync("RoomMessage", RoomMessage);
             await UpdateMessageHistory(RoomMessage);
         }
-
         public async Task SendFileMessageToRoom(IFormFile file, Message message)
         {
             if (_chatRepository.IsUserInRoom(message.SenderUID, message.RoomName) == false)
@@ -129,7 +124,6 @@ namespace ChatroomAPI.Services
             await _hubContext.Clients.Group(message.RoomName).SendAsync("RoomMessage", message);
             await UpdateMessageHistory(message);
         }
-
         #endregion
 
         #region Room function
@@ -145,21 +139,18 @@ namespace ChatroomAPI.Services
                 }
             } 
         }
-
         public async Task JoinRoom(UserRoomInfo userRoomInfo)
         {
             var connectionId = _chatManager.GetUserHubConnectionId(userRoomInfo.UserUID);
             await _hubContext.Groups.AddToGroupAsync(connectionId, userRoomInfo.RoomName);
             await UpdateUserRoom(userRoomInfo, RoomAction.Join);
         }
-
         public async Task ExitRoom(UserRoomInfo userRoomInfo)
         {
             var connectionId = _chatManager.GetUserHubConnectionId(userRoomInfo.UserUID);
             await _hubContext.Groups.RemoveFromGroupAsync(connectionId, userRoomInfo.RoomName);
             await UpdateUserRoom(userRoomInfo, RoomAction.Exit);
         }
-
         private async Task UpdateUserRoom(UserRoomInfo userRoomInfo, RoomAction mode)
         {
             ParticipantDto participantDto = new ParticipantDto();
@@ -184,7 +175,6 @@ namespace ChatroomAPI.Services
         #endregion
 
         #region Transform Model to Dto
-
         private async Task UpdateMessageHistory(Message newMessage)
         {
             MessageDto messageDto = new MessageDto();
@@ -198,7 +188,6 @@ namespace ChatroomAPI.Services
 
             await _chatRepository.UpdateMessageHistory(messageDto);
         }
-
         #endregion
 
     }

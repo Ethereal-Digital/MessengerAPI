@@ -47,12 +47,12 @@ namespace ChatroomAPI.Controllers
             _hcontext = haccess;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetRoomList()
-        //{
-        //    var RoomList = await _chatService.GetRoomList();
-        //    return Ok(RoomList);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetRoomList()
+        {
+            var RoomList = await _chatService.GetRoomList();
+            return Ok(RoomList);
+        }
 
         [HttpGet]
         public async Task<IActionResult> DownloadFile(string attachment_id)

@@ -62,6 +62,12 @@ namespace ChatroomAPI.Repositories
             return messages;
         }
 
+        public async Task<List<RoomDto>> GetRoomList()
+        {
+            List<RoomDto> Rooms = await _chatContext.rooms.AsNoTracking().ToListAsync();
+            return Rooms;
+        }
+
         public List<RoomDto> GetRoom(string participantUID)
         {
             var room = (from rooms in _chatContext.rooms
@@ -73,14 +79,14 @@ namespace ChatroomAPI.Repositories
             return room;
         }
 
-        public int GetRoomId(string roomName)
-        {
-            return _chatContext.rooms.AsNoTracking().Where(x => x.Name == roomName).Select(x => x.Id).FirstOrDefault();
-        }
-
         public string GetRoomName(int roomId)
         {
             return _chatContext.rooms.AsNoTracking().Where(x => x.Id == roomId).Select(x => x.Name).FirstOrDefault();
+        }
+
+        public int GetRoomId(string roomName)
+        {
+            return _chatContext.rooms.AsNoTracking().Where(x => x.Name == roomName).Select(x => x.Id).FirstOrDefault();
         }
 
         public bool IsUserInRoom(string participantUID, string roomName)
@@ -91,12 +97,6 @@ namespace ChatroomAPI.Repositories
         public bool IsUserInRoom(string participantUID, int roomId)
         {
             return _chatContext.participants.Where(x => x.UserUID == participantUID && x.RoomId == roomId).FirstOrDefault() == null;
-        }
-
-        public async Task<List<RoomDto>> GetRoomList()
-        {
-            List<RoomDto> Rooms = await _chatContext.rooms.AsNoTracking().ToListAsync();
-            return Rooms;
         }
 
         public async Task JoinRoom(ParticipantDto participantDto)
