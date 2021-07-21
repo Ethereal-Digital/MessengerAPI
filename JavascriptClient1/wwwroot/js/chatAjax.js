@@ -13,7 +13,7 @@ let UserGroupMessageHistory;
 function UpdateUserConnection() {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: ApiBaseURL + '/chat/UpdateUsersHubConnection',
+            url: ApiBaseURL + '/chat/UpdateUserConnection',
             method: 'POST',
             data: UserConnectionInfo,
             contentType: "application/json",
@@ -53,7 +53,7 @@ function SendMessageToAll() {
     return new Promise((resolve, reject) => {
 
         $.ajax({
-            url: ApiBaseURL + '/chat/SendMessageToAll',
+            url: ApiBaseURL + '/chat/SendMessage',
             method: 'POST',
             data: MessageClass,
             contentType: "application/json",
@@ -73,7 +73,7 @@ function SendMessageToGroup() {
     return new Promise((resolve, reject) => {
 
         $.ajax({
-            url: ApiBaseURL + '/chat/SendMessageToRoom',
+            url: ApiBaseURL + '/chat/SendMessage',
             method: 'POST',
             data: MessageClass,
             contentType: "application/json",
@@ -101,7 +101,7 @@ function GetMessageHistory() {
             success: function (data) {
                 var time = performance.now() - this.startTime;
                 var result = 'AJAX: ' + time + ' milliseconds.';
-                console.log(result);
+                //console.log(result);
                 var jsonData = JSON.stringify(data);
                 resolve(jsonData);
 
@@ -117,7 +117,7 @@ function GetGroupMessageHistory() {
     return new Promise((resolve, reject) => {
 
         $.ajax({
-            url: ApiBaseURL + '/chat/GetGroupMessageHistory',
+            url: ApiBaseURL + '/chat/GetMessageHistory',
             startTime: performance.now(),
             method: 'POST',
             data: UserGroupMessageHistory,
@@ -125,7 +125,7 @@ function GetGroupMessageHistory() {
             success: function (data) {
                 var time = performance.now() - this.startTime;
                 var result = 'AJAX: ' + time + ' milliseconds.';
-                console.log(result);
+                //console.log(result);
                 var jsonData = JSON.stringify(data);
                 resolve(jsonData);
             },
@@ -140,7 +140,7 @@ function JoinGroup() {
     return new Promise((resolve, reject) => {
 
         $.ajax({
-            url: ApiBaseURL + '/chat/JoinRoom',
+            url: ApiBaseURL + '/chat/RoomAction',
             method: 'POST',
             data: JoinGroupJson,
             contentType: "application/json",
@@ -160,7 +160,7 @@ function ExitGroup() {
     return new Promise((resolve, reject) => {
 
         $.ajax({
-            url: ApiBaseURL + '/chat/ExitRoom',
+            url: ApiBaseURL + '/chat/RoomAction',
             method: 'POST',
             data: ExitGroupJson,
             contentType: "application/json",

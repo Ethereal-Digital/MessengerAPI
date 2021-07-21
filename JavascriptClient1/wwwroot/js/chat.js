@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }, false);
                         return xhr;
                     },
-                    url: ApiBaseURL + '/chat/SendFileToAll',
+                    url: ApiBaseURL + '/chat/SendFile',
                     type: "POST",
                     contentType: false, // Not to set any content header  
                     processData: false, // Not to process data  
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }, false);
                     return xhr;
                 },
-                url: ApiBaseURL + '/chat/SendFileToRoom',
+                url: ApiBaseURL + '/chat/SendFile',
                 type: "POST",
                 contentType: false, // Not to set any content header  
                 processData: false, // Not to process data  
@@ -359,7 +359,8 @@ document.addEventListener("DOMContentLoaded", () => {
             JoinGroupJson = JSON.stringify(
                 {
                     "UserUID": id,
-                    "RoomName": group
+                    "RoomName": group,
+                    "RoomAction": "Join"
                 });
     
             JoinGroup().then(response => { });
@@ -381,7 +382,8 @@ document.addEventListener("DOMContentLoaded", () => {
             ExitGroupJson = JSON.stringify(
                 {
                     "UserUID": id,
-                    "RoomName": group
+                    "RoomName": group,
+                    "RoomAction": "Exit"
                 });
 
             ExitGroup().then(response => { });
@@ -426,8 +428,6 @@ document.addEventListener("DOMContentLoaded", () => {
         getGroupMessageHistoryFunc();
 
     });
-
-  
 
     async function start() {
         try {
@@ -523,7 +523,7 @@ function getMessageHistoryFunc() {
                 }
                 document.getElementById("messageList").appendChild(li);
             }
-            console.log("retrieved message history");
+            //console.log("retrieved message history");
 
 
         });
@@ -559,7 +559,7 @@ function getGroupMessageHistoryFunc() {
                 const element = document.createElement('a');
                 const messageList = document.getElementById("groupMessageList");
 
-                console.log(dataArray[i]);
+                //console.log(dataArray[i]);
 
                 if (dataArray[i].messageTypeId == 1) {
                     if (id == dataArray[i].senderUID) {
@@ -570,16 +570,19 @@ function getGroupMessageHistoryFunc() {
                     }
                 }
                 else if (dataArray[i].messageTypeId == 2) {
+
+                    console.log(dataArray[i]);
+
                     element.setAttribute('href', ApiBaseURL + "/chat/downloadFile?attachment_id=" + dataArray[i].uid);
                     element.setAttribute('download', dataArray[i].messageBody);
                     element.textContent = dataArray[i].messageBody;
 
                     if (dataArray[i].senderUID == userID) {
-                        li.textContent = `(${dataArray[i].roomName}) me: `;
+                        li.textContent = `me: `;
                         li.append(element);
                     }
                     else {
-                        li.textContent = `(${dataArray[i].roomName}) ${dataArray[i].senderUID}: `;
+                        li.textContent = `${dataArray[i].senderUID}: `;
                         li.append(element);
                     }
                 }
@@ -587,7 +590,7 @@ function getGroupMessageHistoryFunc() {
                 messageList.appendChild(li);
             }
 
-            console.log("retrieved group message history");
+            //console.log("retrieved group message history");
         });
 
     } catch (err) {

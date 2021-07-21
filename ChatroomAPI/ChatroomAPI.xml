@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ChatroomAPI</name>
+    </assembly>
+    <members>
+        <member name="M:ChatroomAPI.Controllers.ChatController.GetRoomList">
+            <summary>    
+            Get the list of existing room.
+            </summary>    
+            <returns></returns> 
+        </member>
+        <member name="M:ChatroomAPI.Controllers.ChatController.DownloadFile(System.String)">
+            <summary>
+            Get and download relevant file through attachment id.
+            </summary>
+            <param name="attachment_id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChatroomAPI.Controllers.ChatController.UpdateUserConnection(ChatroomAPI.Model.UserConnectionInfo)">
+            <summary>
+            Update and maintain user chat connection.
+            </summary>
+            <param name="UserConnectionInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChatroomAPI.Controllers.ChatController.GetMessageHistory(ChatroomAPI.Model.Frontend.UserMessageHistory)">
+            <summary>
+            Get user/room message history.
+            </summary>
+            <param name="userMessageHistory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChatroomAPI.Controllers.ChatController.SendMessage(ChatroomAPI.Model.Frontend.Message)">
+            <summary>
+            Send message to user/room.
+            </summary>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChatroomAPI.Controllers.ChatController.SendFile(ChatroomAPI.Model.Frontend.FileMessage)">
+            <summary>
+            Send file to user/room.
+            </summary>
+            <param name="fileMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChatroomAPI.Controllers.ChatController.RoomAction(ChatroomAPI.Model.Frontend.UserRoomInfo)">
+            <summary>
+            To manage the user to join or exit the room.
+            </summary>
+            <param name="userRoomInfo"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

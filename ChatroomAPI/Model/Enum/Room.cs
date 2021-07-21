@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ChatroomAPI.Model.Enum
 {
-    public enum RoomAction
+    public enum Room
     {
         None,
         Join,

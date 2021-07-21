@@ -17,18 +17,12 @@ namespace ChatroomAPI.Services.Interface
 
         public Task<List<RoomDto>> GetRoomList();
         public Task<List<MessageDto>> GetMessageHistory(UserMessageHistory userMessageHistory);
-        public Task<List<MessageDto>> GetGroupMessageHistory(UserMessageHistory userMessageHistory);
       
         public Task SendMessage(Message message);
-        public Task SendMessageToAll(Message message);
-        public Task SendMessageToRoom(Message message);
         public Task SendFileMessage(IFormFile file, Message message);
-        public Task SendFileMessageToAll(IFormFile file, Message message);
-        public Task SendFileMessageToRoom(IFormFile file, Message message);
 
         public Task RejoinRoom(UserConnectionInfo userConnectionInfo);
-        public Task JoinRoom(UserRoomInfo userRoomInfo);
-        public Task ExitRoom(UserRoomInfo userRoomInfo);
+        public Task RoomAction(UserRoomInfo userRoomInfo);
 
     }
 }

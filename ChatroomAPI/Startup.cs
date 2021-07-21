@@ -19,7 +19,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ChatroomAPI
@@ -61,7 +63,11 @@ namespace ChatroomAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ChatroomAPI", Version = "v1" });
+                var xmlFile = $@"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+            
 
             //services.AddMvc(option => { option.MaxIAsyncEnumerableBufferLimit = 30000; });
         }

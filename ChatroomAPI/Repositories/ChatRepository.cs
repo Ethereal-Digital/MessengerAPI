@@ -37,7 +37,7 @@ namespace ChatroomAPI.Repositories
             {
                 messages = await _chatContext.messages.Where(x => x.SenderUID == messageHistory.SenderUID && x.ReceiverUID == messageHistory.ReceiverUID
                                                                 || x.SenderUID == messageHistory.ReceiverUID && x.ReceiverUID == messageHistory.SenderUID)
-                                                             .OrderBy(x => x.CreatedDate)
+                                                             .OrderByDescending(x => x.CreatedDate)
                                                              .Skip(messageHistory.ItemSize * messageHistory.Counter)
                                                              .Take(messageHistory.ItemSize)
                                                              .AsNoTracking().ToListAsync();
@@ -45,7 +45,9 @@ namespace ChatroomAPI.Repositories
             else
             {
                 messages =  await _chatContext.messages.Where(x => x.ReceiverUID == messageHistory.ReceiverUID)
-                                                        .OrderBy(x => x.CreatedDate)
+                                                        .OrderByDescending(x => x.CreatedDate)
+                                                        .Skip(messageHistory.ItemSize * messageHistory.Counter)
+                                                        .Take(messageHistory.ItemSize)
                                                         .AsNoTracking().ToListAsync();
             }
             return messages;
@@ -55,7 +57,7 @@ namespace ChatroomAPI.Repositories
         {
             List<MessageDto> messages = new List<MessageDto>();
             messages = await _chatContext.messages.Where(x => x.RoomId == GetRoomId(userMessageHistory.RoomName))
-                                                        .OrderBy(x => x.CreatedDate)
+                                                        .OrderByDescending(x => x.CreatedDate)
                                                         .Skip(userMessageHistory.ItemSize * userMessageHistory.Counter)
                                                         .Take(userMessageHistory.ItemSize)
                                                         .AsNoTracking().ToListAsync();
@@ -90,12 +92,12 @@ namespace ChatroomAPI.Repositories
 
         public bool IsUserInRoom(string participantUID, string roomName)
         {
-            return _chatContext.participants.Where(x => x.UserUID == participantUID && x.RoomId == GetRoomId(roomName)).FirstOrDefault() == null; 
+            return _chatContext.participants.Where(x => x.UserUID == participantUID && x.RoomId == GetRoomId(roomName)).FirstOrDefault() != null; 
         }
 
         public bool IsUserInRoom(string participantUID, int roomId)
         {
-            return _chatContext.participants.Where(x => x.UserUID == participantUID && x.RoomId == roomId).FirstOrDefault() == null;
+            return _chatContext.participants.Where(x => x.UserUID == participantUID && x.RoomId == roomId).FirstOrDefault() != null;
         }
 
         public async Task JoinRoom(ParticipantDto participantDto)

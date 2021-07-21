@@ -12,8 +12,8 @@ namespace ChatroomAPI.Model.Dto
         public string SenderUID { get; set; }
         public string ReceiverUID { get; set; }
         public int? RoomId { get; set; }
-        public int? MessageTypeId { get; set; }
+        public int MessageTypeId { get; set; }
         public string MessageBody { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

@@ -35,18 +35,20 @@ namespace ChatroomAPI.Controllers
         private readonly IHubContext<ChatHub> _hubContext;
         private IFileServices _fileService { get; set; }
         private IChatServices _chatService { get; set; }
-        private IHttpContextAccessor _hcontext;
 
         public ChatController(ILogger<ChatController> logger, [NotNull] IHubContext<ChatHub> chatHub, 
-            IChatServices chatService, IFileServices fileService, IHttpContextAccessor haccess)
+            IChatServices chatService, IFileServices fileService)
         {
             _logger = logger;
             _hubContext = chatHub;
             _fileService = fileService;
             _chatService = chatService;
-            _hcontext = haccess;
         }
 
+        /// <summary>    
+        /// Get the list of existing room.
+        /// </summary>    
+        /// <returns></returns> 
         [HttpGet]
         public async Task<IActionResult> GetRoomList()
         {
@@ -54,6 +56,11 @@ namespace ChatroomAPI.Controllers
             return Ok(RoomList);
         }
 
+        /// <summary>
+        /// Get and download relevant file through attachment id.
+        /// </summary>
+        /// <param name="attachment_id"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> DownloadFile(string attachment_id)
         {
@@ -69,8 +76,13 @@ namespace ChatroomAPI.Controllers
             
         }
 
+        /// <summary>
+        /// Update and maintain user chat connection.
+        /// </summary>
+        /// <param name="UserConnectionInfo"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> UpdateUsersHubConnection(UserConnectionInfo UserConnectionInfo)
+        public async Task<IActionResult> UpdateUserConnection(UserConnectionInfo UserConnectionInfo)
         {
             try
             {
@@ -86,6 +98,11 @@ namespace ChatroomAPI.Controllers
            
         }
 
+        /// <summary>
+        /// Get user/room message history.
+        /// </summary>
+        /// <param name="userMessageHistory"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> GetMessageHistory(UserMessageHistory userMessageHistory)
         {
@@ -100,20 +117,11 @@ namespace ChatroomAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetGroupMessageHistory(UserMessageHistory userGroupMessageHistory)
-        {
-            try
-            {
-                var message = await _chatService.GetGroupMessageHistory(userGroupMessageHistory);
-                return Ok(message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
+        /// <summary>
+        /// Send message to user/room.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(MessageRequestFilter))]
         public async Task<IActionResult> SendMessage(Message message)
@@ -128,37 +136,12 @@ namespace ChatroomAPI.Controllers
                 return BadRequest(e);
             }
         }
-   
-        [HttpPost]
-        [TypeFilter(typeof(MessageRequestFilter))]
-        public async Task<IActionResult> SendMessageToAll(Message message)
-        {
-            try
-            {
-                await _chatService.SendMessageToAll(message);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
 
-        [HttpPost]
-        [TypeFilter(typeof(MessageRequestFilter))]
-        public async Task<IActionResult> SendMessageToRoom(Message message)
-        {
-            try
-            {
-                await _chatService.SendMessageToRoom(message);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
+        /// <summary>
+        /// Send file to user/room.
+        /// </summary>
+        /// <param name="fileMessage"></param>
+        /// <returns></returns>
         [HttpPost]
         [Consumes("multipart/form-data")]
         [TypeFilter(typeof(MessageRequestFilter))]
@@ -177,61 +160,17 @@ namespace ChatroomAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// To manage the user to join or exit the room.
+        /// </summary>
+        /// <param name="userRoomInfo"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Consumes("multipart/form-data")]
-        [TypeFilter(typeof(MessageRequestFilter))]
-        public async Task<IActionResult> SendFileToAll([FromForm] FileMessage fileMessage)
+        public async Task<IActionResult> RoomAction(UserRoomInfo userRoomInfo)
         {
             try
             {
-                Message message = JsonConvert.DeserializeObject<Message>(fileMessage.MessageInfo);
-                await _chatService.SendFileMessageToAll(fileMessage.File, message);
-
-                return Ok(new { Name = fileMessage.File.FileName, Size = FileServices.SizeConverter(fileMessage.File.Length) });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        [TypeFilter(typeof(MessageRequestFilter))]
-        public async Task<IActionResult> SendFileToRoom([FromForm] FileMessage fileMessage)
-        {
-            try
-            {
-                Message message = JsonConvert.DeserializeObject<Message>(fileMessage.MessageInfo);
-                await _chatService.SendFileMessageToRoom(fileMessage.File, message);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> JoinRoom(UserRoomInfo userRoomInfo)
-        {
-            try
-            {
-                await _chatService.JoinRoom(userRoomInfo);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ExitRoom(UserRoomInfo userRoomInfo)
-        {
-            try
-            {
-                await _chatService.ExitRoom(userRoomInfo);
+                await _chatService.RoomAction(userRoomInfo);
                 return Ok();
             }
             catch (Exception e)

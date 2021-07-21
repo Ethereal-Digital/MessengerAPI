@@ -32,7 +32,6 @@ namespace ChatroomAPI.Services
             var target = "";
             var filePath = "";
            
-
             if (message.RoomName == null)
             {
                 target = rootPath + @"\Private\" + message.SenderUID + ";" + message.ReceiverUID + @"\";

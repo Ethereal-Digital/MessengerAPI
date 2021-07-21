@@ -9,5 +9,6 @@ namespace ChatroomAPI.Model.Frontend
     {
         public string UserUID { get; set; }
         public string RoomName { get; set; }
+        public string RoomAction { get; set; }
     }
 }
